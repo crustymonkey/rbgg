@@ -21,7 +21,7 @@ pub async fn get_json_resp(url: &str) -> Result<Value> {
     return Ok(ret);
 }
 
-pub fn b_get_json_resp(url: &str) -> Result<Value> {
+pub fn get_json_resp_b(url: &str) -> Result<Value> {
     let resp = reqwest::blocking::get(url)?.text()?;
     let ret = match to_json(&resp) {
         Ok(res) => res,

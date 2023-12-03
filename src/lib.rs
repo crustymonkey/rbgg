@@ -3,6 +3,6 @@ extern crate reqwest;
 extern crate serde_json;
 extern crate urlencoding;
 
-pub mod api1;
-pub mod api2;
+pub mod bgg1;
+pub mod bgg2;
 pub mod utils;
