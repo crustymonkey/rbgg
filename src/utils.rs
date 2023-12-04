@@ -49,3 +49,34 @@ pub fn params2qs(params: &Params) -> String {
 
     return parts.join("&");
 }
+
+/// A convenience function to return params, empty or not from an option
+pub fn get_opts(options: Option<Params>) -> Params {
+        let mut opts = Params::new();
+
+        if let Some(o) = options {
+            opts = o;
+        }
+
+        return opts;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_opts() {
+        let res = get_opts(None);
+
+        assert_eq!(res, Params::new());
+
+        let p = Params::from([
+            ("key".into(), "value".into()),
+        ]);
+        let res = get_opts(Some(p));
+
+        assert_eq!(res.len(), 1);
+        assert!(res.contains_key("key".into()));
+    }
+}

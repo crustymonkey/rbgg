@@ -13,9 +13,9 @@ Generally speaking, all of the API calls also take options.  You can supply
 these via utils::Params as noted below (with a blocking call).
 
 ```ignore,rust
-use bgg::{utils::Params, bgg1};
+use rbgg::{utils::Params, bgg1};
 
-let cl = bgg1::Client::new(None, None);
+let cl = bgg1::Client1::new(None, None);
 let opts = Params::from([("exact".to_string(), "1".to_string())]);
 let resp = cl.search_b("bruges", Some(opts)).unwrap();
 ```
@@ -26,12 +26,12 @@ use serde_json::Value;
 use crate::utils::{self, Params};
 
 /// A representation of a client to hold the url info for accessing the API
-pub struct Client {
+pub struct Client1 {
     pub url_base: String,
     pub api_prefix: String,
 }
 
-impl Client {
+impl Client1 {
     /// If the url_base or api_prefix are not supplied, the defaults will be
     /// used instead ("https://boardgamegeek.com" and "xmlapi", respectively)
     pub fn new(url_base: Option<String>, api_prefix: Option<String>) -> Self {
@@ -184,18 +184,6 @@ impl Client {
         return ret;
     }
 
-    /// A simple private function that returns a Params instance regardless of
-    /// whether any were passed in.
-    fn get_opts(&self, options: Option<Params>) -> Params {
-        let mut opts = Params::new();
-
-        if let Some(o) = options {
-            opts = o;
-        }
-
-        return opts;
-    }
-
     /// Another simple private function to get the full url for the purposes
     /// of deduping code between the sync and async functionality
     fn get_full_url(
@@ -205,7 +193,7 @@ impl Client {
         default_params: Option<Params>,
         uri_addons: Option<&Vec<String>>,
     ) -> String {
-        let mut opts = self.get_opts(params);
+        let mut opts = utils::get_opts(params);
         // Add the default options
         if let Some(def_params) = default_params {
             for (k, v) in &def_params {
@@ -227,14 +215,14 @@ mod tests {
 
     #[test]
     fn test_client() {
-        let cl = Client::new(None, None);
+        let cl = Client1::new(None, None);
 
         assert_eq!(cl.url_base, "https://boardgamegeek.com".to_string());
         assert_eq!(cl.api_prefix, "xmlapi".to_string());
 
         let base = "https://example.com";
         let prefix = "/blah";
-        let cl = Client::new(Some(base.to_string()), Some(prefix.to_string()));
+        let cl = Client1::new(Some(base.to_string()), Some(prefix.to_string()));
 
         assert_eq!(cl.url_base, base.to_string());
         assert_eq!(cl.api_prefix, "blah");
@@ -242,7 +230,7 @@ mod tests {
 
     #[test]
     fn test_gen_url() {
-        let cl = Client::new(None, None);
+        let cl = Client1::new(None, None);
         let params = Params::from([
             ("search".to_string(), "this is a search".to_string()),
             ("exact".to_string(), "1".to_string()),
@@ -262,25 +250,10 @@ mod tests {
 
         assert_eq!(res, "https://boardgamegeek.com/xmlapi/boardgame/1,2?".to_string());
     }
-    #[test]
-    fn test_get_opts() {
-        let cl = Client::new(None, None);
-        let res = cl.get_opts(None);
-
-        assert!(res.is_empty());
-
-        let p = Params::from([
-            ("key".into(), "value".into()),
-        ]);
-        let res = cl.get_opts(Some(p.clone()));
-
-        assert_eq!(res.len(), 1);
-        assert!(res.contains_key("key".into()));
-    }
 
     #[test]
     fn test_get_full_url() {
-        let cl = Client::new(None, None);
+        let cl = Client1::new(None, None);
         let url = cl.get_full_url(
             "search".to_string(),
             None,
@@ -304,7 +277,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_search() {
-        let cl = Client::new(None, None);
+        let cl = Client1::new(None, None);
         let resp = cl.search("bruges", None).await;
 
         assert!(resp.is_ok());
