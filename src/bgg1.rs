@@ -210,7 +210,7 @@ impl Client1 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json::to_string;
+    use serde_json::to_string_pretty;
     use tokio;
 
     #[test]
@@ -281,6 +281,6 @@ mod tests {
         let resp = cl.search("bruges", None).await;
 
         assert!(resp.is_ok());
-        println!("{}", to_string(&resp.unwrap()).unwrap());
+        println!("{}", to_string_pretty(&resp.unwrap()).unwrap());
     }
 }

@@ -48,14 +48,7 @@ impl Thing {
     }
 
     pub fn to_string(&self) -> String {
-        return match self {
-            Thing::BoardGame => "boardgame".into(),
-            Thing::BoardGameExpansion => "boardgameexpansion".into(),
-            Thing::BoardGameAccessory => "boardgameaccessory".into(),
-            Thing::VideoGame => "videogame".into(),
-            Thing::RpgItem => "rpgitem".into(),
-            Thing::RpgIssue => "rpgissue".into(),
-        };
+        return self.as_str().to_string();
     }
 }
 
@@ -86,13 +79,7 @@ impl Search {
     }
 
     pub fn to_string(&self) -> String {
-        return match self {
-            Search::BoardGame => "boardgame".into(),
-            Search::BoardGameExpansion => "boardgameexpansion".into(),
-            Search::BoardGameAccessory => "boardgameaccessory".into(),
-            Search::VideoGame => "videogame".into(),
-            Search::RpgItem => "rpgitem".into(),
-        };
+        return self.as_str().to_string();
     }
 }
 
@@ -119,11 +106,7 @@ impl Family {
     }
 
     pub fn to_string(&self) -> String {
-        return match self {
-            Family::Rpg => "rpg".into(),
-            Family::RpgPeriodical => "rpgperiodical".into(),
-            Family::BoardGameFamily => "boardgamefamily".into(),
-        };
+        return self.as_str().to_string();
     }
 }
 
@@ -148,10 +131,7 @@ impl ThingFamily {
     }
 
     pub fn to_string(&self) -> String {
-        return match self {
-            ThingFamily::Thing => "thing".into(),
-            ThingFamily::Family => "family".into(),
-        };
+        return self.as_str().to_string();
     }
 }
 
@@ -187,16 +167,7 @@ impl Hotness {
     }
 
     pub fn to_string(&self) -> String {
-        return match self {
-            Hotness::BoardGame => "boardgame".into(),
-            Hotness::Rpg => "rpg".into(),
-            Hotness::VideoGame => "videogame".into(),
-            Hotness::BoardGamePerson => "boardgameperson".into(),
-            Hotness::RpgPerson => "rpgperson".into(),
-            Hotness::BoardGameCompany => "boardgamecompany".into(),
-            Hotness::RpgCompany => "rpgcompany".into(),
-            Hotness::VideoGameCompany => "videogamecompany".into(),
-        };
+        return self.as_str().to_string();
     }
 }
 
@@ -728,6 +699,7 @@ impl Client2 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::to_string_pretty;
 
     #[test]
     fn test_client() {
@@ -787,5 +759,15 @@ mod tests {
         );
 
         assert_eq!(url, "https://boardgamegeek.com/xmlapi2/boardgame?comments=1".to_string());
+    }
+
+    #[tokio::test]
+    async fn test_search() {
+        let cl = Client2::new(None, None);
+        let params = Params::from([("exact".into(), "1".into())]);
+        let resp = cl.search("burges", &vec![Search::BoardGame], Some(params)).await;
+
+        assert!(resp.is_ok());
+        println!("{}", to_string_pretty(&resp.unwrap()).unwrap());
     }
 }
