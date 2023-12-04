@@ -2,6 +2,8 @@ use anyhow::{anyhow, Result};
 use reqwest;
 use serde_json::Value;
 use std::collections::HashMap;
+use tokio::time::{self, Duration};
+use std::thread;
 use urlencoding::encode;
 use xmltojson::to_json;
 
@@ -10,8 +12,25 @@ use xmltojson::to_json;
 pub type Params = HashMap<String, String>;
 
 pub async fn get_json_resp(url: &str) -> Result<Value> {
-    let resp = reqwest::get(url).await?.text().await?;
-    let ret = match to_json(&resp) {
+    let mut resp;
+
+    // Sometimes, when a large request, often for a user's collection,
+    // is made, we'll get a 202 response and we have to request this again
+    // after the server has cached it on their side
+    loop {
+        resp = reqwest::get(url).await?;
+        if resp.status() == 202 {
+            // We're going to sleep here and try again
+            time::sleep(Duration::from_secs(1)).await;
+        } else {
+            // We should be good to process the response now
+            break;
+        }
+    }
+
+    let data = resp.text().await?;
+
+    let ret = match to_json(&data) {
         Ok(res) => res,
         Err(_) => {
             return Err(anyhow!("Failed to convert to JSON"))
@@ -22,8 +41,25 @@ pub async fn get_json_resp(url: &str) -> Result<Value> {
 }
 
 pub fn get_json_resp_b(url: &str) -> Result<Value> {
-    let resp = reqwest::blocking::get(url)?.text()?;
-    let ret = match to_json(&resp) {
+    let mut resp;
+
+    // Sometimes, when a large request, often for a user's collection,
+    // is made, we'll get a 202 response and we have to request this again
+    // after the server has cached it on their side
+    loop {
+        resp = reqwest::blocking::get(url)?;
+        if resp.status() == 202 {
+            // We're going to sleep here and try again
+            thread::sleep(Duration::from_secs(1));
+        } else {
+            // We should be good to process the response now
+            break;
+        }
+    }
+
+    let data = resp.text()?;
+
+    let ret = match to_json(&data) {
         Ok(res) => res,
         Err(_) => {
             return Err(anyhow!("Failed to convert to JSON"));
