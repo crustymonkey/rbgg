@@ -1,4 +1,4 @@
-# rbgg
+# rbgg (WIP)
 This is a library that allows you to conveniently use the boardgamegeek.com
 APIs. This is a pretty thin wrapper over the APIs, so with the documentation
 on BGG's site and the docs here, you should be able to get up and running
