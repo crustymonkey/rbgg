@@ -1,3 +1,6 @@
+/*!
+TODO: documentation for the library here
+ */
 extern crate xmltojson;
 extern crate reqwest;
 extern crate serde_json;
