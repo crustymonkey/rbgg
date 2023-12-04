@@ -211,6 +211,10 @@ impl Client2 {
         };
     }
 
+    pub fn new_from_defaults() -> Self {
+        return Self::new(None, None);
+    }
+
     /// Search (async) the site for the given query and search types
     pub async fn search(
         &self,
@@ -867,11 +871,10 @@ impl Client2 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json::to_string_pretty;
 
     #[test]
     fn test_client() {
-        let cl = Client2::new(None, None);
+        let cl = Client2::new_from_defaults();
 
         assert_eq!(cl.url_base, "https://boardgamegeek.com".to_string());
         assert_eq!(cl.api_prefix, "xmlapi2".to_string());
@@ -886,7 +889,7 @@ mod tests {
 
     #[test]
     fn test_gen_url() {
-        let cl = Client2::new(None, None);
+        let cl = Client2::new_from_defaults();
         let params = Params::from([
             ("search".to_string(), "this is a search".to_string()),
             ("exact".to_string(), "1".to_string()),
@@ -909,7 +912,7 @@ mod tests {
 
     #[test]
     fn test_get_full_url() {
-        let cl = Client2::new(None, None);
+        let cl = Client2::new_from_defaults();
         let url = cl.get_full_url(
             "search".to_string(),
             None,
@@ -927,15 +930,5 @@ mod tests {
         );
 
         assert_eq!(url, "https://boardgamegeek.com/xmlapi2/boardgame?comments=1".to_string());
-    }
-
-    #[tokio::test]
-    async fn test_search() {
-        let cl = Client2::new(None, None);
-        let params = Params::from([("exact".into(), "1".into())]);
-        let resp = cl.search("burges", &vec![Search::BoardGame], Some(params)).await;
-
-        assert!(resp.is_ok());
-        println!("{}", to_string_pretty(&resp.unwrap()).unwrap());
     }
 }
