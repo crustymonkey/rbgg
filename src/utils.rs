@@ -1,3 +1,8 @@
+/*!
+This has some low level conveience functions, but what you will want to use
+here is the `Params` type, which is just a shorthand for
+HashMap<String, String>.
+*/
 use anyhow::{anyhow, Result};
 use reqwest;
 use serde_json::Value;
@@ -8,7 +13,7 @@ use urlencoding::encode;
 use xmltojson::to_json;
 
 
-// Convenience type
+/// Convenience type that is just a shorthand for a HashMap
 pub type Params = HashMap<String, String>;
 
 pub async fn get_json_resp(url: &str) -> Result<Value> {
