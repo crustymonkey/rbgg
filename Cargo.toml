@@ -2,10 +2,15 @@
 name = "rbgg"
 version = "0.1.0"
 edition = "2021"
+authors = ["Jay Deiman <jay@splitstreams.com>"]
 description = """A simple Rust library that will fetch the BGG data using \
     the APIs defined on boardgamegeek.com \
     (https://boardgamegeek.com/wiki/page/BGG_XML_API).  This will take input \
     queries and return JSON responses."""
+license = "GPL-2.0-or-later"
+repository = "https://github.com/crustymonkey/rbgg"
+homepage = "https://github.com/crustymonkey/rbgg"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
