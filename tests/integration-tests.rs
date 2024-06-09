@@ -58,7 +58,7 @@ fn test_boardgame() {
         ("stats".into(), "1".into()),
     ]);
     let res = cl.boardgame_b(&vec![136888, 133473], Some(params));
-    
+
     assert!(res.is_ok());
     let data = res.unwrap();
     println!("{}", to_string_pretty(&data).unwrap());
