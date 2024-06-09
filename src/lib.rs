@@ -5,7 +5,7 @@ APIs. This is a pretty thin wrapper over the APIs, so with the documentation
 on BGG's site and the docs here, you should be able to get up and running
 quickly.
 
-API version 1: https://boardgamegeek.com/wiki/page/BGG_XML_API  
+API version 1: https://boardgamegeek.com/wiki/page/BGG_XML_API
 API version 2: https://boardgamegeek.com/wiki/page/BGG_XML_API2
 
 The basics of this library are pretty simple. You make a call that matches up
@@ -91,10 +91,10 @@ site as that's what the library implements.  Happy gaming!
 }
 ```
  */
-extern crate xmltojson;
 extern crate reqwest;
 extern crate serde_json;
 extern crate urlencoding;
+extern crate xmltojson;
 
 pub mod bgg1;
 pub mod bgg2;

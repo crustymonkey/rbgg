@@ -7,11 +7,10 @@ use anyhow::{anyhow, Result};
 use reqwest;
 use serde_json::Value;
 use std::collections::HashMap;
-use tokio::time::{self, Duration};
 use std::thread;
+use tokio::time::{self, Duration};
 use urlencoding::encode;
 use xmltojson::to_json;
-
 
 /// Convenience type that is just a shorthand for a HashMap
 pub type Params = HashMap<String, String>;
@@ -37,9 +36,7 @@ pub async fn get_json_resp(url: &str) -> Result<Value> {
 
     let ret = match to_json(&data) {
         Ok(res) => res,
-        Err(_) => {
-            return Err(anyhow!("Failed to convert to JSON"))
-        },
+        Err(_) => return Err(anyhow!("Failed to convert to JSON")),
     };
 
     return Ok(ret);
@@ -68,7 +65,7 @@ pub fn get_json_resp_b(url: &str) -> Result<Value> {
         Ok(res) => res,
         Err(_) => {
             return Err(anyhow!("Failed to convert to JSON"));
-        },
+        }
     };
 
     return Ok(ret);
@@ -93,13 +90,13 @@ pub fn params2qs(params: &Params) -> String {
 
 /// A convenience function to return params, empty or not from an option
 pub fn get_opts(options: Option<Params>) -> Params {
-        let mut opts = Params::new();
+    let mut opts = Params::new();
 
-        if let Some(o) = options {
-            opts = o;
-        }
+    if let Some(o) = options {
+        opts = o;
+    }
 
-        return opts;
+    return opts;
 }
 
 #[cfg(test)]
@@ -112,9 +109,7 @@ mod tests {
 
         assert_eq!(res, Params::new());
 
-        let p = Params::from([
-            ("key".into(), "value".into()),
-        ]);
+        let p = Params::from([("key".into(), "value".into())]);
         let res = get_opts(Some(p));
 
         assert_eq!(res.len(), 1);

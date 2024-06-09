@@ -21,9 +21,9 @@ let resp = cl.search_b("bruges", Some(opts)).unwrap();
 ```
 */
 
+use crate::utils::{self, Params};
 use anyhow::Result;
 use serde_json::Value;
-use crate::utils::{self, Params};
 
 /// A representation of a client to hold the url info for accessing the API
 pub struct Client1 {
@@ -65,18 +65,12 @@ impl Client1 {
     }
 
     /// Search for a game on BGG and return the JSON response
-    pub async fn search(
-        &self,
-        search: &str,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn search(&self, search: &str, options: Option<Params>) -> Result<Value> {
         let url = self.get_full_url(
             "search".into(),
             options,
-            Some(Params::from([
-                ("search".into(), search.into()),
-            ])),
-            None
+            Some(Params::from([("search".into(), search.into())])),
+            None,
         );
         let data = utils::get_json_resp(&url).await?;
 
@@ -84,18 +78,12 @@ impl Client1 {
     }
 
     /// (blocking) Search for a game on BGG and return the JSON response
-    pub fn search_b(
-        &self,
-        search: &str,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn search_b(&self, search: &str, options: Option<Params>) -> Result<Value> {
         let url = self.get_full_url(
             "search".into(),
             options,
-            Some(Params::from([
-                ("search".into(), search.into()),
-            ])),
-            None
+            Some(Params::from([("search".into(), search.into())])),
+            None,
         );
         let data = utils::get_json_resp_b(&url)?;
 
@@ -105,19 +93,10 @@ impl Client1 {
     /// Async retrieve information about a particular game given its game ID(s).
     /// Note that you pass in a vec of game IDs here as you can get info on
     /// more than 1 game in a single call
-    pub async fn boardgame(
-        &self,
-        game_ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn boardgame(&self, game_ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         // Convert the int vec to Vec<&str>
         let ids: Vec<String> = game_ids.iter().map(|i| i.to_string()).collect();
-        let url = self.get_full_url(
-            "boardgame".into(),
-            options,
-            None,
-            Some(&ids)
-        );
+        let url = self.get_full_url("boardgame".into(), options, None, Some(&ids));
         let data = utils::get_json_resp(&url).await?;
 
         return Ok(data);
@@ -129,12 +108,7 @@ impl Client1 {
     pub fn boardgame_b(&self, game_ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         // Convert the int vec to Vec<&str>
         let ids: Vec<String> = game_ids.iter().map(|i| i.to_string()).collect();
-        let url = self.get_full_url(
-            "boardgame".into(),
-            options,
-            None,
-            Some(&ids),
-        );
+        let url = self.get_full_url("boardgame".into(), options, None, Some(&ids));
         let data = utils::get_json_resp_b(&url)?;
 
         return Ok(data);
@@ -142,18 +116,9 @@ impl Client1 {
 
     /// Async retrieve a user's collection.  Note that there are a variety of
     /// different parameters that can be used here.
-    pub async fn collection(
-        &self,
-        username: &str,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn collection(&self, username: &str, options: Option<Params>) -> Result<Value> {
         let addons = vec![username.to_string()];
-        let url = self.get_full_url(
-            "collection".into(),
-            options,
-            None,
-            Some(&addons),
-        );
+        let url = self.get_full_url("collection".into(), options, None, Some(&addons));
         let data = utils::get_json_resp(&url).await?;
 
         return Ok(data);
@@ -161,90 +126,45 @@ impl Client1 {
 
     /// Retrieve a user's collection.  Note that there are a variety of
     /// different parameters that can be used here.
-    pub fn collection_b(
-        &self,
-        username: &str,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn collection_b(&self, username: &str, options: Option<Params>) -> Result<Value> {
         let addons = vec![username.to_string()];
-        let url = self.get_full_url(
-            "collection".into(),
-            options,
-            None,
-            Some(&addons),
-        );
+        let url = self.get_full_url("collection".into(), options, None, Some(&addons));
         let data = utils::get_json_resp_b(&url)?;
 
         return Ok(data);
     }
 
     /// Async get a forum/game thread.  Note that the thread ID is an int
-    pub async fn thread(
-        &self,
-        thread_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn thread(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![thread_id.to_string()];
-        let url = self.get_full_url(
-            "thread".into(),
-            options,
-            None,
-            Some(&addons),
-        );
+        let url = self.get_full_url("thread".into(), options, None, Some(&addons));
         let data = utils::get_json_resp(&url).await?;
 
         return Ok(data);
     }
 
     /// Get a forum/game thread.  Note that the thread ID is an int
-    pub fn thread_b(
-        &self,
-        thread_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn thread_b(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![thread_id.to_string()];
-        let url = self.get_full_url(
-            "thread".into(),
-            options,
-            None,
-            Some(&addons),
-        );
+        let url = self.get_full_url("thread".into(), options, None, Some(&addons));
         let data = utils::get_json_resp_b(&url)?;
 
         return Ok(data);
     }
 
     /// Async get a geeklist.  Note that the list ID is an int
-    pub async fn geeklist(
-        &self,
-        list_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn geeklist(&self, list_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![list_id.to_string()];
-        let url = self.get_full_url(
-            "thread".into(),
-            options,
-            None,
-            Some(&addons),
-        );
+        let url = self.get_full_url("thread".into(), options, None, Some(&addons));
         let data = utils::get_json_resp(&url).await?;
 
         return Ok(data);
     }
 
     /// Get a geeklist.  Note that the list ID is an int
-    pub fn geeklist_b(
-        &self,
-        list_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn geeklist_b(&self, list_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![list_id.to_string()];
-        let url = self.get_full_url(
-            "thread".into(),
-            options,
-            None,
-            Some(&addons),
-        );
+        let url = self.get_full_url("thread".into(), options, None, Some(&addons));
         let data = utils::get_json_resp_b(&url)?;
 
         return Ok(data);
@@ -268,7 +188,6 @@ impl Client1 {
             ret = ret + "/" + &addons.join(",");
         }
         ret += "?";
-        
 
         if let Some(opts) = options {
             let qs = utils::params2qs(&opts);
@@ -340,7 +259,10 @@ mod tests {
 
         let res = cl.gen_url("boardgame", None, Some(&vec!["1".into(), "2".into()]));
 
-        assert_eq!(res, "https://boardgamegeek.com/xmlapi/boardgame/1,2?".to_string());
+        assert_eq!(
+            res,
+            "https://boardgamegeek.com/xmlapi/boardgame/1,2?".to_string()
+        );
     }
 
     #[test]
@@ -349,13 +271,14 @@ mod tests {
         let url = cl.get_full_url(
             "search".to_string(),
             None,
-            Some(Params::from([
-                ("search".into(), "this is a search".into()),
-            ]), ),
+            Some(Params::from([("search".into(), "this is a search".into())])),
             None,
         );
 
-        assert_eq!(url, "https://boardgamegeek.com/xmlapi/search?search=this%20is%20a%20search");
+        assert_eq!(
+            url,
+            "https://boardgamegeek.com/xmlapi/search?search=this%20is%20a%20search"
+        );
 
         let url = cl.get_full_url(
             "boardgame".into(),
@@ -364,6 +287,9 @@ mod tests {
             Some(&vec!["a".into(), "b".into(), "c".into()]),
         );
 
-        assert_eq!(url, "https://boardgamegeek.com/xmlapi/boardgame/a,b,c?comments=1".to_string());
+        assert_eq!(
+            url,
+            "https://boardgamegeek.com/xmlapi/boardgame/a,b,c?comments=1".to_string()
+        );
     }
 }

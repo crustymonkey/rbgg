@@ -20,9 +20,9 @@ let resp = cl.search_b("bruges", Some(opts)).unwrap();
 ```
 */
 
+use crate::utils::{self, Params};
 use anyhow::{anyhow, Result};
 use serde_json::Value;
-use crate::utils::{self, Params};
 use std::fmt;
 
 /// This is used mainly for raw thing() calls
@@ -330,20 +330,12 @@ impl Client2 {
     }
 
     /// A (async) convenience function for getting the info for a board game
-    pub async fn boardgame(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn boardgame(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing(ids, &vec![Thing::BoardGame], options).await;
     }
 
     /// A (sync) convenience function for getting the info for a board game
-    pub fn boardgame_b(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn boardgame_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::BoardGame], options);
     }
 
@@ -354,16 +346,14 @@ impl Client2 {
         ids: &Vec<usize>,
         options: Option<Params>,
     ) -> Result<Value> {
-        return self.thing(ids, &vec![Thing::BoardGameExpansion], options).await;
+        return self
+            .thing(ids, &vec![Thing::BoardGameExpansion], options)
+            .await;
     }
 
     /// A (sync) convenience function for getting the info for a board game
     /// expansion
-    pub fn boardgameexpansion_b(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn boardgameexpansion_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::BoardGameExpansion], options);
     }
 
@@ -374,70 +364,44 @@ impl Client2 {
         ids: &Vec<usize>,
         options: Option<Params>,
     ) -> Result<Value> {
-        return self.thing(ids, &vec![Thing::BoardGameAccessory], options).await;
+        return self
+            .thing(ids, &vec![Thing::BoardGameAccessory], options)
+            .await;
     }
 
     /// A (sync) convenience function for getting the info for a board game
     /// accessory
-    pub fn boardgameaccessory_b(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn boardgameaccessory_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::BoardGameAccessory], options);
     }
 
     /// A (async) convenience function for getting the info for a video game
-    pub async fn videogame(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn videogame(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing(ids, &vec![Thing::VideoGame], options).await;
     }
 
     /// A (sync) convenience function for getting the info for a video game
-    pub fn videogame_b(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn videogame_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::VideoGame], options);
     }
 
     /// A (async) convenience function for getting the info for a rpg item
-    pub async fn rpgitem(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn rpgitem(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing(ids, &vec![Thing::RpgItem], options).await;
     }
 
     /// A (sync) convenience function for getting the info for a rpg item
-    pub fn rpgitem_b(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn rpgitem_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::RpgItem], options);
     }
 
     /// A (async) convenience function for getting the info for a rpg issue
-    pub async fn rpgissue(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub async fn rpgissue(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing(ids, &vec![Thing::RpgIssue], options).await;
     }
 
     /// A (sync) convenience function for getting the info for a rpg issue
-    pub fn rpgissue_b(
-        &self,
-        ids: &Vec<usize>,
-        options: Option<Params>,
-    ) -> Result<Value> {
+    pub fn rpgissue_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::RpgIssue], options);
     }
 
@@ -451,10 +415,7 @@ impl Client2 {
     /// for you.
     pub async fn family(&self, ids: &Vec<usize>, ttypes: &Vec<Family>) -> Result<Value> {
         // Convert the numeric ids to strings
-        let sids: Vec<String> = ids
-            .iter()
-            .map(|i| i.to_string())
-            .collect();
+        let sids: Vec<String> = ids.iter().map(|i| i.to_string()).collect();
         let params = Params::from([
             ("id".into(), sids.join(",")),
             (
@@ -479,10 +440,7 @@ impl Client2 {
     /// for you.
     pub fn family_b(&self, ids: &Vec<usize>, ttypes: &Vec<Family>) -> Result<Value> {
         // Convert the numeric ids to strings
-        let sids: Vec<String> = ids
-            .iter()
-            .map(|i| i.to_string())
-            .collect();
+        let sids: Vec<String> = ids.iter().map(|i| i.to_string()).collect();
         let params = Params::from([
             ("id".into(), sids.join(",")),
             (
@@ -538,11 +496,7 @@ impl Client2 {
     /* End "family" items */
 
     /// Get a (async) list of forums for a given game (by ID)
-    pub async fn forumlist(
-        &self,
-        game_id: usize,
-        ltype: ThingFamily,
-    ) -> Result<Value> {
+    pub async fn forumlist(&self, game_id: usize, ltype: ThingFamily) -> Result<Value> {
         let params = Params::from([
             ("id".into(), game_id.to_string()),
             ("type".into(), ltype.to_string()),
@@ -555,11 +509,7 @@ impl Client2 {
     }
 
     /// Get a (sync) list of forums for a given game (by ID)
-    pub fn forumlist_b(
-        &self,
-        game_id: usize,
-        ltype: ThingFamily
-    ) -> Result<Value> {
+    pub fn forumlist_b(&self, game_id: usize, ltype: ThingFamily) -> Result<Value> {
         let params = Params::from([
             ("id".into(), game_id.to_string()),
             ("type".into(), ltype.to_string()),
@@ -572,14 +522,8 @@ impl Client2 {
     }
 
     /// Get a (async) list of threads in a particular forum by forum ID
-    pub async fn forum(
-        &self,
-        forum_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("id".into(), forum_id.to_string()),
-        ]);
+    pub async fn forum(&self, forum_id: usize, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("id".into(), forum_id.to_string())]);
         let url = self.get_full_url("forumlist".into(), options, Some(params));
 
         let data = utils::get_json_resp(&url).await?;
@@ -588,14 +532,8 @@ impl Client2 {
     }
 
     /// Get a (sync) list of threads in a particular forum by forum ID
-    pub async fn forum_b(
-        &self,
-        forum_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("id".into(), forum_id.to_string()),
-        ]);
+    pub async fn forum_b(&self, forum_id: usize, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("id".into(), forum_id.to_string())]);
         let url = self.get_full_url("forumlist".into(), options, Some(params));
 
         let data = utils::get_json_resp_b(&url)?;
@@ -604,14 +542,8 @@ impl Client2 {
     }
 
     /// Get a (async) thread by ID
-    pub async fn thread(
-        &self,
-        thread_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("id".into(), thread_id.to_string()),
-        ]);
+    pub async fn thread(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("id".into(), thread_id.to_string())]);
         let url = self.get_full_url("thread".into(), options, Some(params));
 
         let data = utils::get_json_resp(&url).await?;
@@ -620,14 +552,8 @@ impl Client2 {
     }
 
     /// Get a (sync) list of threads in a particular forum by forum ID
-    pub fn thread_b(
-        &self,
-        thread_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("id".into(), thread_id.to_string()),
-        ]);
+    pub fn thread_b(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("id".into(), thread_id.to_string())]);
         let url = self.get_full_url("thread".into(), options, Some(params));
 
         let data = utils::get_json_resp_b(&url)?;
@@ -636,14 +562,8 @@ impl Client2 {
     }
 
     /// Get a (async) user by their username
-    pub async fn user(
-        &self,
-        username: &str,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("name".into(), username.into()),
-        ]);
+    pub async fn user(&self, username: &str, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("name".into(), username.into())]);
         let url = self.get_full_url("user".into(), options, Some(params));
 
         let data = utils::get_json_resp(&url).await?;
@@ -652,14 +572,8 @@ impl Client2 {
     }
 
     /// Get a (sync) user by their username
-    pub fn user_b(
-        &self,
-        username: &str,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("name".into(), username.into()),
-        ]);
+    pub fn user_b(&self, username: &str, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("name".into(), username.into())]);
         let url = self.get_full_url("user".into(), options, Some(params));
 
         let data = utils::get_json_resp_b(&url)?;
@@ -668,14 +582,8 @@ impl Client2 {
     }
 
     /// Get a (async) guild by ID
-    pub async fn guild(
-        &self,
-        guild_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("id".into(), guild_id.to_string()),
-        ]);
+    pub async fn guild(&self, guild_id: usize, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("id".into(), guild_id.to_string())]);
         let url = self.get_full_url("guild".into(), options, Some(params));
 
         let data = utils::get_json_resp(&url).await?;
@@ -684,14 +592,8 @@ impl Client2 {
     }
 
     /// Get a (async) guild by ID
-    pub fn guild_b(
-        &self,
-        guild_id: usize,
-        options: Option<Params>,
-    ) -> Result<Value> {
-        let params = Params::from([
-            ("id".into(), guild_id.to_string()),
-        ]);
+    pub fn guild_b(&self, guild_id: usize, options: Option<Params>) -> Result<Value> {
+        let params = Params::from([("id".into(), guild_id.to_string())]);
         let url = self.get_full_url("guild".into(), options, Some(params));
 
         let data = utils::get_json_resp_b(&url)?;
@@ -710,19 +612,21 @@ impl Client2 {
     ) -> Result<Value> {
         if username.is_none() && (item_id.is_none() || ttype.is_none()) {
             // TODO: Replace with custom error type
-            return Err(anyhow!("You must supply either a username or item_id + ttype"));
+            return Err(anyhow!(
+                "You must supply either a username or item_id + ttype"
+            ));
         }
 
         if username.is_some() && item_id.is_some() {
             // TODO: Replace with custom error type
-            return Err(anyhow!("You must supply either a username or item_id + ttype, not both"));
+            return Err(anyhow!(
+                "You must supply either a username or item_id + ttype, not both"
+            ));
         }
 
         let params;
         if let Some(u) = username {
-            params = Params::from([
-                ("username".into(), u.into()),
-            ]);
+            params = Params::from([("username".into(), u.into())]);
         } else if let Some(id) = item_id {
             params = Params::from([
                 ("id".into(), id.to_string()),
@@ -730,7 +634,9 @@ impl Client2 {
             ]);
         } else {
             // We should never get here
-            return Err(anyhow!("We have a logic bug here as this should never happen"));
+            return Err(anyhow!(
+                "We have a logic bug here as this should never happen"
+            ));
         }
 
         let url = self.get_full_url("plays".into(), options, Some(params));
@@ -751,19 +657,21 @@ impl Client2 {
     ) -> Result<Value> {
         if username.is_none() && (item_id.is_none() || ttype.is_none()) {
             // TODO: Replace with custom error type
-            return Err(anyhow!("You must supply either a username or item_id + ttype"));
+            return Err(anyhow!(
+                "You must supply either a username or item_id + ttype"
+            ));
         }
 
         if username.is_some() && item_id.is_some() {
             // TODO: Replace with custom error type
-            return Err(anyhow!("You must supply either a username or item_id + ttype, not both"));
+            return Err(anyhow!(
+                "You must supply either a username or item_id + ttype, not both"
+            ));
         }
 
         let params;
         if let Some(u) = username {
-            params = Params::from([
-                ("username".into(), u.into()),
-            ]);
+            params = Params::from([("username".into(), u.into())]);
         } else if let Some(id) = item_id {
             params = Params::from([
                 ("id".into(), id.to_string()),
@@ -771,7 +679,9 @@ impl Client2 {
             ]);
         } else {
             // We should never get here
-            return Err(anyhow!("We have a logic bug here as this should never happen"));
+            return Err(anyhow!(
+                "We have a logic bug here as this should never happen"
+            ));
         }
 
         let url = self.get_full_url("plays".into(), options, Some(params));
@@ -783,9 +693,7 @@ impl Client2 {
 
     /// Get a (async) user's collection by username
     pub async fn collection(&self, username: &str, options: Option<Params>) -> Result<Value> {
-        let params = Params::from([
-            ("username".into(), username.into()),
-        ]);
+        let params = Params::from([("username".into(), username.into())]);
         let url = self.get_full_url("collection".into(), options, Some(params));
 
         let data = utils::get_json_resp(&url).await?;
@@ -795,9 +703,7 @@ impl Client2 {
 
     /// Get a (sync) user's collection by username
     pub fn collection_b(&self, username: &str, options: Option<Params>) -> Result<Value> {
-        let params = Params::from([
-            ("username".into(), username.into()),
-        ]);
+        let params = Params::from([("username".into(), username.into())]);
         let url = self.get_full_url("collection".into(), options, Some(params));
 
         let data = utils::get_json_resp_b(&url)?;
@@ -807,9 +713,7 @@ impl Client2 {
 
     /// Get (async) the latest hotness on BGG
     pub async fn hot(&self, htype: Hotness) -> Result<Value> {
-        let params = Params::from([
-            ("type".into(), htype.to_string()),
-        ]);
+        let params = Params::from([("type".into(), htype.to_string())]);
         let url = self.get_full_url("hot".into(), None, Some(params));
 
         let data = utils::get_json_resp(&url).await?;
@@ -819,9 +723,7 @@ impl Client2 {
 
     /// Get (sync) the latest hotness on BGG
     pub async fn hot_b(&self, htype: Hotness) -> Result<Value> {
-        let params = Params::from([
-            ("type".into(), htype.to_string()),
-        ]);
+        let params = Params::from([("type".into(), htype.to_string())]);
         let url = self.get_full_url("hot".into(), None, Some(params));
 
         let data = utils::get_json_resp_b(&url)?;
@@ -907,7 +809,10 @@ mod tests {
 
         let res = cl.gen_url("boardgame", None);
 
-        assert_eq!(res, "https://boardgamegeek.com/xmlapi2/boardgame?".to_string());
+        assert_eq!(
+            res,
+            "https://boardgamegeek.com/xmlapi2/boardgame?".to_string()
+        );
     }
 
     #[test]
@@ -916,12 +821,13 @@ mod tests {
         let url = cl.get_full_url(
             "search".to_string(),
             None,
-            Some(Params::from([
-                ("search".into(), "this is a search".into()),
-            ])),
+            Some(Params::from([("search".into(), "this is a search".into())])),
         );
 
-        assert_eq!(url, "https://boardgamegeek.com/xmlapi2/search?search=this%20is%20a%20search");
+        assert_eq!(
+            url,
+            "https://boardgamegeek.com/xmlapi2/search?search=this%20is%20a%20search"
+        );
 
         let url = cl.get_full_url(
             "boardgame".into(),
@@ -929,6 +835,9 @@ mod tests {
             None,
         );
 
-        assert_eq!(url, "https://boardgamegeek.com/xmlapi2/boardgame?comments=1".to_string());
+        assert_eq!(
+            url,
+            "https://boardgamegeek.com/xmlapi2/boardgame?comments=1".to_string()
+        );
     }
 }
