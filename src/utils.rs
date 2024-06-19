@@ -115,4 +115,26 @@ mod tests {
         assert_eq!(res.len(), 1);
         assert!(res.contains_key("key".into()));
     }
+    #[test]
+    fn test_params_encoding() {
+        // Basic test
+        let p = Params::from([("key".into(), "value".into())]);
+        assert_eq!(params2qs(&p), "key=value");
+
+        // Test for the url encoding
+        let p = Params::from([("key=".into(), "value".into())]);
+        assert_eq!(params2qs(&p), "key%3D=value");
+
+        // Due to the lack of stable ordering in a hash map, I have to do some
+        // different style of checks here.
+        let p = Params::from([
+            ("key1".into(), "value1".into()),
+            ("key2".into(), "value2".into()),
+        ]);
+        let res = params2qs(&p);
+        let amp_count = res.chars().filter(|c| *c == '&').count();
+        assert_eq!(amp_count, 1);
+        assert!(res.contains("key1=value1"));
+        assert!(res.contains("key2=value2"));
+    }
 }
