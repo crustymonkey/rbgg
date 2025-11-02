@@ -15,14 +15,14 @@ use xmltojson::to_json;
 /// Convenience type that is just a shorthand for a HashMap
 pub type Params = HashMap<String, String>;
 
-pub async fn get_json_resp(url: &str) -> Result<Value> {
+pub async fn get_json_resp(url: &str, api_key: &str) -> Result<Value> {
     let mut resp;
 
-    // Sometimes, when a large request, often for a user's collection,
-    // is made, we'll get a 202 response and we have to request this again
+    // Sometimes, when a large request, often for a user's collection, // is made, we'll get a 202 response and we have to request this again
     // after the server has cached it on their side
     loop {
-        resp = reqwest::get(url).await?;
+        let client = get_req_builder(url, api_key);
+        resp = client.send().await?;
         if resp.status() == 202 {
             // We're going to sleep here and try again
             time::sleep(Duration::from_secs(1)).await;
@@ -42,14 +42,15 @@ pub async fn get_json_resp(url: &str) -> Result<Value> {
     return Ok(ret);
 }
 
-pub fn get_json_resp_b(url: &str) -> Result<Value> {
+pub fn get_json_resp_b(url: &str, api_key: &str) -> Result<Value> {
     let mut resp;
 
     // Sometimes, when a large request, often for a user's collection,
     // is made, we'll get a 202 response and we have to request this again
     // after the server has cached it on their side
     loop {
-        resp = reqwest::blocking::get(url)?;
+        let client = get_req_builder_b(url, api_key);
+        resp = client.send()?;
         if resp.status() == 202 {
             // We're going to sleep here and try again
             thread::sleep(Duration::from_secs(1));
@@ -97,6 +98,23 @@ pub fn get_opts(options: Option<Params>) -> Params {
     }
 
     return opts;
+}
+
+/// Get the request builder with the auth header set
+pub fn get_req_builder(url: &str, api_key: &str) -> reqwest::RequestBuilder {
+    let client = reqwest::Client::new();
+
+    return client
+        .get(url)
+        .bearer_auth(api_key);
+}
+
+pub fn get_req_builder_b(url: &str, api_key: &str) -> reqwest::blocking::RequestBuilder {
+    let client = reqwest::blocking::Client::new();
+
+    return client
+        .get(url)
+        .bearer_auth(api_key);
 }
 
 #[cfg(test)]

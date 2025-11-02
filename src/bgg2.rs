@@ -181,14 +181,16 @@ impl fmt::Display for Hotness {
 pub struct Client2 {
     pub url_base: String,
     pub api_prefix: String,
+    pub api_key: String,
 }
 
 impl Client2 {
     /// If the url_base or api_prefix are not supplied, the defaults will be
     /// used instead ("https://boardgamegeek.com" and "xmlapi2", respectively)
-    pub fn new(url_base: Option<String>, api_prefix: Option<String>) -> Self {
+    pub fn new(api_key: &str, url_base: Option<String>, api_prefix: Option<String>) -> Self {
         let ub;
         let prefix;
+        let api_key = api_key.to_string();
 
         if let Some(u) = url_base {
             ub = match u.strip_suffix('/') {
@@ -208,11 +210,12 @@ impl Client2 {
         return Self {
             url_base: ub,
             api_prefix: prefix,
+            api_key: api_key,
         };
     }
 
-    pub fn new_from_defaults() -> Self {
-        return Self::new(None, None);
+    pub fn new_from_defaults(api_key: &str) -> Self {
+        return Self::new(api_key, None, None);
     }
 
     /// Search (async) the site for the given query and search types
@@ -236,7 +239,7 @@ impl Client2 {
 
         let url = self.get_full_url("search".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -262,7 +265,7 @@ impl Client2 {
 
         let url = self.get_full_url("search".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -294,7 +297,7 @@ impl Client2 {
         ]);
         let url = self.get_full_url("thing".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -324,7 +327,7 @@ impl Client2 {
         ]);
         let url = self.get_full_url("thing".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -429,7 +432,7 @@ impl Client2 {
         ]);
         let url = self.get_full_url("family".into(), None, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -454,7 +457,7 @@ impl Client2 {
         ]);
         let url = self.get_full_url("family".into(), None, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -503,7 +506,7 @@ impl Client2 {
         ]);
         let url = self.get_full_url("forumlist".into(), None, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -516,7 +519,7 @@ impl Client2 {
         ]);
         let url = self.get_full_url("forumlist".into(), None, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -526,7 +529,7 @@ impl Client2 {
         let params = Params::from([("id".into(), forum_id.to_string())]);
         let url = self.get_full_url("forumlist".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -536,7 +539,7 @@ impl Client2 {
         let params = Params::from([("id".into(), forum_id.to_string())]);
         let url = self.get_full_url("forumlist".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -546,7 +549,7 @@ impl Client2 {
         let params = Params::from([("id".into(), thread_id.to_string())]);
         let url = self.get_full_url("thread".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -556,7 +559,7 @@ impl Client2 {
         let params = Params::from([("id".into(), thread_id.to_string())]);
         let url = self.get_full_url("thread".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -566,7 +569,7 @@ impl Client2 {
         let params = Params::from([("name".into(), username.into())]);
         let url = self.get_full_url("user".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -576,7 +579,7 @@ impl Client2 {
         let params = Params::from([("name".into(), username.into())]);
         let url = self.get_full_url("user".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -586,7 +589,7 @@ impl Client2 {
         let params = Params::from([("id".into(), guild_id.to_string())]);
         let url = self.get_full_url("guild".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -596,7 +599,7 @@ impl Client2 {
         let params = Params::from([("id".into(), guild_id.to_string())]);
         let url = self.get_full_url("guild".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -641,7 +644,7 @@ impl Client2 {
 
         let url = self.get_full_url("plays".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -686,7 +689,7 @@ impl Client2 {
 
         let url = self.get_full_url("plays".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -696,7 +699,7 @@ impl Client2 {
         let params = Params::from([("username".into(), username.into())]);
         let url = self.get_full_url("collection".into(), options, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -706,7 +709,7 @@ impl Client2 {
         let params = Params::from([("username".into(), username.into())]);
         let url = self.get_full_url("collection".into(), options, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -716,7 +719,7 @@ impl Client2 {
         let params = Params::from([("type".into(), htype.to_string())]);
         let url = self.get_full_url("hot".into(), None, Some(params));
 
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -726,7 +729,7 @@ impl Client2 {
         let params = Params::from([("type".into(), htype.to_string())]);
         let url = self.get_full_url("hot".into(), None, Some(params));
 
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -817,7 +820,7 @@ mod tests {
 
     #[test]
     fn test_get_full_url() {
-        let cl = Client2::new_from_defaults();
+        let cl = Client2::new_from_defaults("abc123");
         let url = cl.get_full_url(
             "search".to_string(),
             None,

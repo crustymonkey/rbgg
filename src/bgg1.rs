@@ -29,14 +29,16 @@ use serde_json::Value;
 pub struct Client1 {
     pub url_base: String,
     pub api_prefix: String,
+    pub api_key: String,
 }
 
 impl Client1 {
     /// If the url_base or api_prefix are not supplied, the defaults will be
     /// used instead ("https://boardgamegeek.com" and "xmlapi", respectively)
-    pub fn new(url_base: Option<String>, api_prefix: Option<String>) -> Self {
+    pub fn new(api_key: &str, url_base: Option<String>, api_prefix: Option<String>) -> Self {
         let ub;
         let prefix;
+        let api_key = api_key.to_string();
 
         if let Some(u) = url_base {
             ub = match u.strip_suffix('/') {
@@ -56,12 +58,13 @@ impl Client1 {
         return Self {
             url_base: ub,
             api_prefix: prefix,
+            api_key: api_key,
         };
     }
 
     /// Create a new instance using the defaults for url_base and api_prefix
-    pub fn new_from_defaults() -> Self {
-        return Self::new(None, None);
+    pub fn new_from_defaults(api_key: &str) -> Self {
+        return Self::new(api_key, None, None);
     }
 
     /// Search for a game on BGG and return the JSON response
@@ -72,7 +75,7 @@ impl Client1 {
             Some(Params::from([("search".into(), search.into())])),
             None,
         );
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -85,7 +88,7 @@ impl Client1 {
             Some(Params::from([("search".into(), search.into())])),
             None,
         );
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -97,7 +100,7 @@ impl Client1 {
         // Convert the int vec to Vec<&str>
         let ids: Vec<String> = game_ids.iter().map(|i| i.to_string()).collect();
         let url = self.get_full_url("boardgame".into(), options, None, Some(&ids));
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -109,7 +112,7 @@ impl Client1 {
         // Convert the int vec to Vec<&str>
         let ids: Vec<String> = game_ids.iter().map(|i| i.to_string()).collect();
         let url = self.get_full_url("boardgame".into(), options, None, Some(&ids));
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -119,7 +122,7 @@ impl Client1 {
     pub async fn collection(&self, username: &str, options: Option<Params>) -> Result<Value> {
         let addons = vec![username.to_string()];
         let url = self.get_full_url("collection".into(), options, None, Some(&addons));
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -129,7 +132,7 @@ impl Client1 {
     pub fn collection_b(&self, username: &str, options: Option<Params>) -> Result<Value> {
         let addons = vec![username.to_string()];
         let url = self.get_full_url("collection".into(), options, None, Some(&addons));
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -138,7 +141,7 @@ impl Client1 {
     pub async fn thread(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![thread_id.to_string()];
         let url = self.get_full_url("thread".into(), options, None, Some(&addons));
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -147,7 +150,7 @@ impl Client1 {
     pub fn thread_b(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![thread_id.to_string()];
         let url = self.get_full_url("thread".into(), options, None, Some(&addons));
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }
@@ -156,7 +159,7 @@ impl Client1 {
     pub async fn geeklist(&self, list_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![list_id.to_string()];
         let url = self.get_full_url("thread".into(), options, None, Some(&addons));
-        let data = utils::get_json_resp(&url).await?;
+        let data = utils::get_json_resp(&url, &self.api_key).await?;
 
         return Ok(data);
     }
@@ -165,7 +168,7 @@ impl Client1 {
     pub fn geeklist_b(&self, list_id: usize, options: Option<Params>) -> Result<Value> {
         let addons = vec![list_id.to_string()];
         let url = self.get_full_url("thread".into(), options, None, Some(&addons));
-        let data = utils::get_json_resp_b(&url)?;
+        let data = utils::get_json_resp_b(&url, &self.api_key)?;
 
         return Ok(data);
     }

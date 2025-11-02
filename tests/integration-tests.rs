@@ -1,10 +1,17 @@
 use rbgg::{bgg1::Client1, bgg2::*, utils::Params};
 use serde_json::to_string_pretty;
+use std::env;
+
+fn get_api_key() -> String {
+    // Get the API key from the BGG_API env variable
+    return env::var("BGG_API").unwrap();
+}
 
 #[test]
 fn test_search() {
     // API v1
-    let cl = Client1::new_from_defaults();
+    let api_key = get_api_key();
+    let cl = Client1::new_from_defaults(&api_key);
     let params = Params::from([("exact".into(), "1".into())]);
     let res = cl.search_b("bruges", Some(params));
 
@@ -14,7 +21,8 @@ fn test_search() {
     assert_eq!("Bruges", &data["boardgames"]["boardgame"]["name"]["#text"]);
 
     // API v2
-    let cl = Client2::new_from_defaults();
+    let api_key = get_api_key();
+    let cl = Client2::new_from_defaults(&api_key);
     let params = Params::from([("exact".into(), "1".into())]);
 
     let res = cl.search_b("bruges", &vec![Search::BoardGame], Some(params));
@@ -29,7 +37,8 @@ fn test_search() {
 #[test]
 fn test_boardgame() {
     // API v1
-    let cl = Client1::new_from_defaults();
+    let api_key = get_api_key();
+    let cl = Client1::new_from_defaults(&api_key);
     let params = Params::from([("stats".into(), "1".into())]);
     let res = cl.boardgame_b(&vec![136888, 133473], Some(params));
 
@@ -46,7 +55,8 @@ fn test_boardgame() {
     );
 
     // API v2
-    let cl = Client2::new_from_defaults();
+    let api_key = get_api_key();
+    let cl = Client2::new_from_defaults(&api_key);
     let params = Params::from([("stats".into(), "1".into())]);
     let res = cl.boardgame_b(&vec![136888, 133473], Some(params));
 

@@ -26,8 +26,8 @@ use rbgg::bgg2::*;
 
 // There's also a Client2::new() that allows you to change root url and
 // API path, but unless you have some specfic use case, you want to use
-// the defaults.
-let client = Client2::new_from_defaults();
+// the defaults. You must supply an API key as the only arg.
+let client = Client2::new_from_defaults("abc123");
 // Calling the search function async. I'll note that all results, both async
 // and sync, will be `Result<Value>`
 let result = client.search("bruges", &vec![Search::BoardGame], None).await?;
@@ -50,7 +50,7 @@ first using the direct thing API, then the `boardgame()` convenience method.
 ```rust
 use rbgg::{bgg2::*, utils::Params};
 
-let client = Client2::new_from_defaults();
+let client = Client2::new_from_defaults("abc123");
 // You can set any of the parameters for the call using the `Params` in the
 // utils lib.
 let params = Params::from([
