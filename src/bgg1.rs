@@ -226,17 +226,23 @@ impl Client1 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env;
+
+    fn get_api_key() -> String {
+        // Get the API key from the BGG_API env variable
+        return env::var("BGG_API").unwrap();
+    }
 
     #[test]
     fn test_client() {
-        let cl = Client1::new_from_defaults();
+        let cl = Client1::new_from_defaults(&get_api_key());
 
         assert_eq!(cl.url_base, "https://boardgamegeek.com".to_string());
         assert_eq!(cl.api_prefix, "xmlapi".to_string());
 
         let base = "https://example.com";
         let prefix = "/blah";
-        let cl = Client1::new(Some(base.to_string()), Some(prefix.to_string()));
+        let cl = Client1::new(&get_api_key(), Some(base.to_string()), Some(prefix.to_string()));
 
         assert_eq!(cl.url_base, base.to_string());
         assert_eq!(cl.api_prefix, "blah");
@@ -244,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_gen_url() {
-        let cl = Client1::new_from_defaults();
+        let cl = Client1::new_from_defaults(&get_api_key());
         let params = Params::from([
             ("search".to_string(), "this is a search".to_string()),
             ("exact".to_string(), "1".to_string()),
@@ -270,7 +276,7 @@ mod tests {
 
     #[test]
     fn test_get_full_url() {
-        let cl = Client1::new_from_defaults();
+        let cl = Client1::new_from_defaults(&get_api_key());
         let url = cl.get_full_url(
             "search".to_string(),
             None,
