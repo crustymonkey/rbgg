@@ -15,7 +15,7 @@ these via utils::Params as noted below (with a blocking call).
 ```ignore,rust
 use rbgg::{utils::Params, bgg1};
 
-let cl = bgg1::Client1::new(None, None);
+let cl = bgg1::Client1::new("abc123", None, None);
 let opts = Params::from([("exact".to_string(), "1".to_string())]);
 let resp = cl.search_b("bruges", Some(opts)).unwrap();
 ```

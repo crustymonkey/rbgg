@@ -15,6 +15,8 @@ use xmltojson::to_json;
 /// Convenience type that is just a shorthand for a HashMap
 pub type Params = HashMap<String, String>;
 
+/// This performs the actual request to the BGG API and returns the JSON
+/// response.
 pub async fn get_json_resp(url: &str, api_key: &str) -> Result<Value> {
     let mut resp;
 
@@ -42,6 +44,8 @@ pub async fn get_json_resp(url: &str, api_key: &str) -> Result<Value> {
     return Ok(ret);
 }
 
+/// This performs the request to the BGG API and returns the JSON response,
+/// but in a blocking way.
 pub fn get_json_resp_b(url: &str, api_key: &str) -> Result<Value> {
     let mut resp;
 
@@ -109,6 +113,7 @@ pub fn get_req_builder(url: &str, api_key: &str) -> reqwest::RequestBuilder {
         .bearer_auth(api_key);
 }
 
+/// Get the blocking variant of the request builder with the auth header set
 pub fn get_req_builder_b(url: &str, api_key: &str) -> reqwest::blocking::RequestBuilder {
     let client = reqwest::blocking::Client::new();
 

@@ -14,7 +14,7 @@ these via utils::Params (Hashmap) as noted below (with a blocking call).
 ```ignore,rust
 use bgg::{utils::Params, bgg1};
 
-let cl = bgg2::Client2::new(None, None);
+let cl = bgg2::Client2::new("abc123", None, None);
 let opts = Params::from([("exact".to_string(), "1".to_string())]);
 let resp = cl.search_b("bruges", Some(opts)).unwrap();
 ```
@@ -214,6 +214,7 @@ impl Client2 {
         };
     }
 
+    /// Create a new client using the default url_base and api_prefix
     pub fn new_from_defaults(api_key: &str) -> Self {
         return Self::new(api_key, None, None);
     }
@@ -244,7 +245,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Search (async) the site for the given query and search types
+    /// Search (blocking) the site for the given query and search types
     pub fn search_b(
         &self,
         query: &str,
@@ -302,7 +303,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// This is the core (sync) function for getting various "things" as
+    /// This is the core (blocking) function for getting various "things" as
     /// described by the BGG API.  It's also possible to use the convenience
     /// functions like `boardgame()` instead, which will set the thing type
     /// for you.
@@ -337,7 +338,7 @@ impl Client2 {
         return self.thing(ids, &vec![Thing::BoardGame], options).await;
     }
 
-    /// A (sync) convenience function for getting the info for a board game
+    /// A (blocking) convenience function for getting the info for a board game
     pub fn boardgame_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::BoardGame], options);
     }
@@ -354,7 +355,7 @@ impl Client2 {
             .await;
     }
 
-    /// A (sync) convenience function for getting the info for a board game
+    /// A (blocking) convenience function for getting the info for a board game
     /// expansion
     pub fn boardgameexpansion_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::BoardGameExpansion], options);
@@ -372,7 +373,7 @@ impl Client2 {
             .await;
     }
 
-    /// A (sync) convenience function for getting the info for a board game
+    /// A (blocking) convenience function for getting the info for a board game
     /// accessory
     pub fn boardgameaccessory_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::BoardGameAccessory], options);
@@ -383,7 +384,7 @@ impl Client2 {
         return self.thing(ids, &vec![Thing::VideoGame], options).await;
     }
 
-    /// A (sync) convenience function for getting the info for a video game
+    /// A (blocking) convenience function for getting the info for a video game
     pub fn videogame_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::VideoGame], options);
     }
@@ -393,7 +394,7 @@ impl Client2 {
         return self.thing(ids, &vec![Thing::RpgItem], options).await;
     }
 
-    /// A (sync) convenience function for getting the info for a rpg item
+    /// A (blocking) convenience function for getting the info for a rpg item
     pub fn rpgitem_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::RpgItem], options);
     }
@@ -403,7 +404,7 @@ impl Client2 {
         return self.thing(ids, &vec![Thing::RpgIssue], options).await;
     }
 
-    /// A (sync) convenience function for getting the info for a rpg issue
+    /// A (blocking) convenience function for getting the info for a rpg issue
     pub fn rpgissue_b(&self, ids: &Vec<usize>, options: Option<Params>) -> Result<Value> {
         return self.thing_b(ids, &vec![Thing::RpgIssue], options);
     }
@@ -437,7 +438,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// This is the core (sync) function for getting various "family" items as
+    /// This is the core (blocking) function for getting various "family" items as
     /// described by the BGG API.  It's also possible to use the convenience
     /// functions like `rpg()` instead, which will set the thing type
     /// for you.
@@ -467,7 +468,7 @@ impl Client2 {
         return self.family(ids, &vec![Family::Rpg]).await;
     }
 
-    /// A (sync) convenience function for getting the info for a rpg
+    /// A (blocking) convenience function for getting the info for a rpg
     pub fn rpg_b(&self, ids: &Vec<usize>) -> Result<Value> {
         return self.family_b(ids, &vec![Family::Rpg]);
     }
@@ -478,7 +479,7 @@ impl Client2 {
         return self.family(ids, &vec![Family::RpgPeriodical]).await;
     }
 
-    /// A (sync) convenience function for getting the info for a rpg
+    /// A (blocking) convenience function for getting the info for a rpg
     /// periodical
     pub fn rpgperiodical_b(&self, ids: &Vec<usize>) -> Result<Value> {
         return self.family_b(ids, &vec![Family::RpgPeriodical]);
@@ -490,7 +491,7 @@ impl Client2 {
         return self.family(ids, &vec![Family::BoardGameFamily]).await;
     }
 
-    /// A (sync) convenience function for getting the info for a board game
+    /// A (blocking) convenience function for getting the info for a board game
     /// family
     pub fn boardgamefamily_b(&self, ids: &Vec<usize>) -> Result<Value> {
         return self.family_b(ids, &vec![Family::BoardGameFamily]);
@@ -511,7 +512,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get a (sync) list of forums for a given game (by ID)
+    /// Get a (blocking) list of forums for a given game (by ID)
     pub fn forumlist_b(&self, game_id: usize, ltype: ThingFamily) -> Result<Value> {
         let params = Params::from([
             ("id".into(), game_id.to_string()),
@@ -534,7 +535,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get a (sync) list of threads in a particular forum by forum ID
+    /// Get a (blocking) list of threads in a particular forum by forum ID
     pub async fn forum_b(&self, forum_id: usize, options: Option<Params>) -> Result<Value> {
         let params = Params::from([("id".into(), forum_id.to_string())]);
         let url = self.get_full_url("forumlist".into(), options, Some(params));
@@ -554,7 +555,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get a (sync) list of threads in a particular forum by forum ID
+    /// Get a (blocking) list of threads in a particular forum by forum ID
     pub fn thread_b(&self, thread_id: usize, options: Option<Params>) -> Result<Value> {
         let params = Params::from([("id".into(), thread_id.to_string())]);
         let url = self.get_full_url("thread".into(), options, Some(params));
@@ -574,7 +575,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get a (sync) user by their username
+    /// Get a (blocking) user by their username
     pub fn user_b(&self, username: &str, options: Option<Params>) -> Result<Value> {
         let params = Params::from([("name".into(), username.into())]);
         let url = self.get_full_url("user".into(), options, Some(params));
@@ -649,7 +650,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get (sync) plays for a user or for a particular item. Either a
+    /// Get (blocking) plays for a user or for a particular item. Either a
     /// username or item ID + ttype MUST be supplied
     pub fn plays_b(
         &self,
@@ -704,7 +705,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get a (sync) user's collection by username
+    /// Get a (blocking) user's collection by username
     pub fn collection_b(&self, username: &str, options: Option<Params>) -> Result<Value> {
         let params = Params::from([("username".into(), username.into())]);
         let url = self.get_full_url("collection".into(), options, Some(params));
@@ -724,7 +725,7 @@ impl Client2 {
         return Ok(data);
     }
 
-    /// Get (sync) the latest hotness on BGG
+    /// Get (blocking) the latest hotness on BGG
     pub async fn hot_b(&self, htype: Hotness) -> Result<Value> {
         let params = Params::from([("type".into(), htype.to_string())]);
         let url = self.get_full_url("hot".into(), None, Some(params));

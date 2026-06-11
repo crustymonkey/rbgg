@@ -1,7 +1,7 @@
 [package]
 name = "rbgg"
 version = "0.2.0"
-edition = "2021"
+edition = "2024"
 authors = ["Jay Deiman <jay@splitstreams.com>"]
 description = """A simple Rust library that will fetch the BGG data using \
     the APIs defined on boardgamegeek.com \
